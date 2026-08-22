@@ -1,0 +1,25 @@
+{
+  "agentrust": {
+    "trace_id": "0192f3a0-0000-7000-8000-0000000000aa",
+    "agent_id": "spiffe://litzki.systems/agent/sovp-demo",
+    "agent_manifest_id": "0192f3a0-0000-7000-8000-000000000001",
+    "manifest_verification_result": "VALID",
+    "tool_id": "systems.litzki.sovp.attestation",
+    "policy_hash": "sha256:a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1",
+    "catalog_hash": "sha256:b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+    "decision": "allow",
+    "decision_reason": "SOVP attestation result accepted by caller policy.",
+    "payload_classification": "internal",
+    "egress_destination": "trace.local",
+    "hitl_required": false,
+    "hitl_approval_id": null,
+    "timestamp": "2026-08-22T00:00:00Z",
+    "tee_measurement": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
+  },
+  "sovp": {
+    "result": "passed",
+    "measurement": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+    "nonce": "example-nonce",
+    "subject": "sovp-demo"
+  }
+}

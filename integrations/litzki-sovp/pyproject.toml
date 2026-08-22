@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "litzki-sovp-agentrust-bridge"
+version = "0.1.0"
+description = "SOVP to AgenTrust TRACE bridge"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "Apache-2.0"}
+dependencies = [
+  "agent-manifest>=0.11",
+  "agentrust-trace>=0",
+  "agentrust-trace-tests>=0",
+  "cmcp-runtime>=0",
+  "cryptography>=42,<51",
+]
+
+[project.scripts]
+litzki-sovp-trace = "litzki_sovp.adapter:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/litzki_sovp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

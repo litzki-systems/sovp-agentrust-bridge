@@ -1,0 +1,32 @@
+name: litzki-sovp
+vendor: Litzki Systems
+product: SOVP
+version: 0.1.0
+category: attestation
+summary: Emits signed AgenTrust TRACE records from SOVP attestation results.
+maintainer:
+  name: Litzki Systems
+  email: maintainers@litzki.systems
+links:
+  homepage: https://github.com/litzki-systems/sovp-agentrust-bridge
+  repository: https://github.com/litzki-systems/sovp-agentrust-bridge
+runtime:
+  language: python
+  package: litzki-sovp-agentrust-bridge
+  requires_python: '>=3.11'
+  dependencies:
+    - cmcp-runtime
+    - agentrust-trace
+    - agentrust-trace-tests
+    - agent-manifest
+capabilities:
+  emits:
+    - trace-record
+  consumes:
+    - sovp-attestation-result
+claims:
+  tier: community
+  trace_conformance: pending
+  verified: false
+notes:
+  - TRACE conformance is intentionally marked pending until agentrust-trace-tests can be run against the generated records in an environment with PyPI access.
