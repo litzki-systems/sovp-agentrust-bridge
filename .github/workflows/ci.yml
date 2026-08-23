@@ -1,0 +1,42 @@
+name: conformance
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    name: pytest + TRACE Level 0
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install package and test tooling
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ./integrations/litzki-sovp pytest
+
+      - name: Unit tests
+        run: python -m pytest integrations/litzki-sovp/tests -q
+
+      - name: Generate a signed TRACE record
+        run: |
+          # Throwaway per-run signing key; never committed. See the package README.
+          openssl genpkey -algorithm Ed25519 -out "$RUNNER_TEMP/ed25519-private.pem"
+          litzki-sovp-trace \
+            --input integrations/litzki-sovp/examples/sovp-attestation.json \
+            --private-key "$RUNNER_TEMP/ed25519-private.pem" \
+            --output "$RUNNER_TEMP/sovp.trace.json"
+
+      - name: TRACE conformance (Level 0)
+        run: trace-tests verify --record "$RUNNER_TEMP/sovp.trace.json" --level 0
