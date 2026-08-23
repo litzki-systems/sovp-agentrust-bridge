@@ -5,3 +5,7 @@ __pycache__/
 dist/
 build/
 *.egg-info/
+
+# Private signing keys — never commit (demo keys are generated locally, see README)
+*-private.pem
+*.key
