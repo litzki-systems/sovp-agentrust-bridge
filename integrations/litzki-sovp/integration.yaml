@@ -27,8 +27,8 @@ capabilities:
 claims:
   tier: community
   trace_conformance: level-0
-  verified: true
+  verified: false
 notes:
-  - Generated records pass agentrust-trace-tests at Level 0 (TR-ENV, TR-SIG, TR-POL). Reproduce with `trace-tests verify --record <record> --level 0`.
+  - Generated records pass agentrust-trace-tests at Level 0 (TR-ENV, TR-SIG, TR-POL). Reproduce with `trace-tests verify --record <record> --level 0`; this repository's CI runs that reproduction on every push and pull request (.github/workflows/ci.yml, Python 3.11 and 3.12).
   - Level 0 is the honest ceiling for this bridge. It transcribes a SOVP attestation rather than measuring a hardware TEE, so runtime.platform is software-only, which the suite accepts only at Level 0.
-  - verified means this repository's CI runs that reproduction on every push and pull request (.github/workflows/ci.yml, Python 3.11 and 3.12). It attests Level-0 conformance only; it is not an endorsement by the AgenTrust maintainers.
+  - The Verified tier is granted by the AgenTrust maintainers during marketplace review, never self-declared. This field stays false until then.
