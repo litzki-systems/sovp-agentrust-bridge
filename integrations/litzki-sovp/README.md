@@ -33,6 +33,17 @@ See `examples/sovp-attestation.json` for the minimal local fixture shape.
 
 ## Usage
 
+First generate a local Ed25519 signing key. This is a throwaway demo key; it is
+git-ignored and must not be committed. Use a persistent, protected key for any
+record you intend to be re-verified later.
+
+```bash
+openssl genpkey -algorithm Ed25519 \
+  -out integrations/litzki-sovp/examples/ed25519-private.pem
+```
+
+Then produce a signed TRACE record:
+
 ```bash
 litzki-sovp-trace \
   --input integrations/litzki-sovp/examples/sovp-attestation.json \
@@ -44,5 +55,10 @@ litzki-sovp-trace \
 
 ```bash
 python -m pytest integrations/litzki-sovp/tests
-python -m agentrust_trace_tests /tmp/sovp.trace.json
+trace-tests verify --record /tmp/sovp.trace.json --level 0
 ```
+
+The generated record passes TRACE conformance at **Level 0** (`TR-ENV`, `TR-SIG`,
+`TR-POL`). Level 0 is the honest ceiling for this bridge: it transcribes a SOVP
+attestation rather than measuring a hardware TEE, so `runtime.platform` is
+`software-only`, which the suite accepts only at Level 0.

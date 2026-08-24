@@ -26,7 +26,9 @@ capabilities:
     - sovp-attestation-result
 claims:
   tier: community
-  trace_conformance: pending
+  trace_conformance: level-0
   verified: false
 notes:
-  - TRACE conformance is intentionally marked pending until agentrust-trace-tests can be run against the generated records in an environment with PyPI access.
+  - Generated records pass agentrust-trace-tests at Level 0 (TR-ENV, TR-SIG, TR-POL). Reproduce with `trace-tests verify --record <record> --level 0`; this repository's CI runs that reproduction on every push and pull request (.github/workflows/ci.yml, Python 3.11 and 3.12).
+  - Level 0 is the honest ceiling for this bridge. It transcribes a SOVP attestation rather than measuring a hardware TEE, so runtime.platform is software-only, which the suite accepts only at Level 0.
+  - The Verified tier is granted by the AgenTrust maintainers during marketplace review, never self-declared. This field stays false until then.
