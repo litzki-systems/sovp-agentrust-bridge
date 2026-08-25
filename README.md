@@ -29,7 +29,7 @@ it was not given.
 ## Install
 
 ```bash
-pip install "git+https://github.com/litzki-systems/sovp-agentrust-bridge#subdirectory=integrations/litzki-sovp"
+pip install litzki-sovp-agentrust-bridge
 ```
 
 ## Usage
