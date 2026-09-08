@@ -82,6 +82,39 @@ def test_pre_image_excludes_only_signature():
     assert trace_signing_pre_image(record) == first
 
 
+def test_appraisal_verifier_is_a_uri_and_record_passes_full_schema():
+    # agentrust-trace >= 0.10.0 enforces the full TRACE v0.2 JSON Schema inside
+    # verify_record, including `format: uri` on appraisal.verifier. A bare package
+    # name is not a URI, so the record must carry a URI here to stay verifiable.
+    from agentrust_trace.validate import iter_errors
+
+    signed = sign_trace_record(build_trace_record(_sovp_result()), Ed25519PrivateKey.generate())
+
+    assert signed["appraisal"]["verifier"] == "https://github.com/litzki-systems/sovp-agentrust-bridge"
+    assert iter_errors(signed) == []
+
+
+def test_non_ascii_fields_round_trip_through_canonical_signing():
+    # The bridge signs over the RFC 8785 (JCS) canonical form. Guards the upstream
+    # RFC 8785 conformance fixes the signing layer relies on: JSON strings are not
+    # NFC-normalized (so umlauts are preserved byte-for-byte, no signature collision)
+    # and only the ECMAScript-standard escape set is applied (so non-ASCII code
+    # points are emitted as raw UTF-8, not \uXXXX escapes).
+    private_key = Ed25519PrivateKey.generate()
+    source = _sovp_result()
+    source["sovp"]["subject"] = "Grüße-Ünïçōdé-über"
+
+    signed = sign_trace_record(build_trace_record(source), private_key)
+
+    # Non-ASCII survives transcription unchanged and the record still verifies.
+    assert signed["origin"]["source_event_id"] == "Grüße-Ünïçōdé-über"
+    verify_record(signed, private_key.public_key())
+
+    pre_image = trace_signing_pre_image(signed)
+    assert "ü".encode("utf-8") in pre_image  # raw UTF-8, not NFC-folded away
+    assert b"\\u00fc" not in pre_image  # and not escaped to ASCII
+
+
 def test_record_passes_trace_tests_level_0():
     signed = sign_trace_record(build_trace_record(_sovp_result()), Ed25519PrivateKey.generate())
 
