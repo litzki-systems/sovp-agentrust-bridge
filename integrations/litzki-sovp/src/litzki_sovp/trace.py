@@ -42,6 +42,11 @@ TRACE_REQUIRED_FIELDS = (
 # schema but fails Level-0 conformance, so it is deliberately not offered here.
 _VALID_ENFORCEMENT_MODES = frozenset({"enforce", "advisory", "silent"})
 
+# ``appraisal.verifier`` must be a URI under the TRACE v0.2 schema. This identifies
+# the bridge that transcribed the SOVP evidence into TRACE shape; appraisal.status is
+# ``none``, so it names the transcriber, not an appraising verifier.
+VERIFIER_URI = "https://github.com/litzki-systems/sovp-agentrust-bridge"
+
 
 def _enforcement_mode(agentrust: Mapping[str, Any]) -> str:
     """Return a conformance-valid ``policy.enforcement_mode`` for the record.
@@ -126,7 +131,10 @@ def build_trace_record(sovp_result: Mapping[str, Any]) -> dict[str, Any]:
         },
         "appraisal": {
             "status": "none",
-            "verifier": "litzki-sovp-agentrust-bridge",
+            # TRACE v0.2 requires ``appraisal.verifier`` to be a URI (the schema
+            # verify_record enforces since agentrust-trace 0.10.0). A bare package
+            # name is not one, so identify the bridge by its repository URI.
+            "verifier": VERIFIER_URI,
             "timestamp": now,
         },
     }
