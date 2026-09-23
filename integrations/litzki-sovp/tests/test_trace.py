@@ -24,7 +24,7 @@ def _sovp_result():
             "payload_classification": "internal",
             "tee_measurement": "sha256:" + "cd" * 32,
         },
-        "sovp": {"result": "passed", "measurement": "sha256:" + "cd" * 32, "nonce": "example-nonce", "subject": "sovp-demo"},
+        "sovp": {"result": "CERTIFIED", "measurement": "sha256:" + "cd" * 32, "nonce": "example-nonce", "subject": "sovp-demo"},
     }
 
 

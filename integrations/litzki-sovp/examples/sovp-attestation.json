@@ -17,7 +17,7 @@
     "tee_measurement": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
   },
   "sovp": {
-    "result": "passed",
+    "result": "CERTIFIED",
     "measurement": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
     "nonce": "example-nonce",
     "subject": "sovp-demo"
