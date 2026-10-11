@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "litzki-sovp-agentrust-bridge"
-version = "0.1.1"
+version = "0.2.0"
 description = "SOVP to AgenTrust TRACE bridge"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -15,6 +15,7 @@ dependencies = [
   "agentrust-trace-tests>=0.5.1",
   "cmcp-runtime>=0.4.0",
   "cryptography>=42,<51",
+  "rfc8785>=0.1.4",
 ]
 
 [project.scripts]

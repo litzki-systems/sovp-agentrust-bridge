@@ -19,8 +19,23 @@ def load_private_key(path: Path) -> Ed25519PrivateKey:
     return key
 
 
-def convert_file(input_path: Path, private_key_path: Path, output_path: Path) -> None:
+def convert_file(
+    input_path: Path,
+    private_key_path: Path,
+    output_path: Path,
+    attestation_path: Path | None = None,
+    attestation_url: str | None = None,
+) -> None:
     sovp_result = json.loads(input_path.read_text(encoding="utf-8"))
+    if not isinstance(sovp_result, dict):
+        raise ValueError("input must be a JSON object")
+    # Command line values override the matching input fields. Nothing is fetched.
+    if attestation_path is not None:
+        sovp_result["sovp_attestation_document"] = json.loads(
+            attestation_path.read_text(encoding="utf-8")
+        )
+    if attestation_url is not None:
+        sovp_result["sovp_attestation_url"] = attestation_url
     private_key = load_private_key(private_key_path)
     record = build_trace_record(sovp_result)
     signed = sign_trace_record(record, private_key)
@@ -32,8 +47,22 @@ def main() -> None:
     parser.add_argument("--input", required=True, type=Path, help="SOVP attestation result JSON")
     parser.add_argument("--private-key", required=True, type=Path, help="Ed25519 private key in PEM format")
     parser.add_argument("--output", required=True, type=Path, help="Output TRACE JSON path")
+    parser.add_argument(
+        "--attestation",
+        type=Path,
+        help="Full SOVP SovereignAttestation document (JSON file). Adds one references entry "
+        "with its SHA-256 over RFC 8785 bytes. Overrides sovp_attestation_document in --input.",
+    )
+    parser.add_argument(
+        "--attestation-url",
+        help="URL the document was served from, https://<subject.domain>/.well-known/sovp-attestation.json. "
+        "Overrides sovp_attestation_url in --input.",
+    )
     args = parser.parse_args()
-    convert_file(args.input, args.private_key, args.output)
+    try:
+        convert_file(args.input, args.private_key, args.output, args.attestation, args.attestation_url)
+    except ValueError as exc:
+        parser.exit(2, f"litzki-sovp-trace: error: {exc}\n")
 
 
 if __name__ == "__main__":

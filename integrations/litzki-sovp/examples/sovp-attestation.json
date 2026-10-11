@@ -1,4 +1,5 @@
 {
+  "_comment": "sovp_attestation_document is an unmodified copy of https://litzki-systems.com/.well-known/sovp-attestation.json as served on 2026-10-11. The bridge hashes it (SHA-256 over RFC 8785 bytes) into one references entry; it does not verify its SOVP signature.",
   "agentrust": {
     "trace_id": "0192f3a0-0000-7000-8000-0000000000aa",
     "agent_id": "spiffe://litzki.systems/agent/sovp-demo",
@@ -21,5 +22,34 @@
     "measurement": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
     "nonce": "example-nonce",
     "subject": "sovp-demo"
+  },
+  "sovp_attestation_url": "https://litzki-systems.com/.well-known/sovp-attestation.json",
+  "sovp_attestation_document": {
+    "@context": "https://litzki-systems.com/protocol/sovp-attestation-v1",
+    "@type": "SovereignAttestation",
+    "subject": {
+      "domain": "litzki-systems.com",
+      "canonical_url": "https://litzki-systems.com"
+    },
+    "attestation": {
+      "verdict": "CERTIFIED",
+      "sovereignScore": 100,
+      "contentQuality": 95,
+      "aiReadiness": 99,
+      "infrastructureScore": 99,
+      "scanned_at": "2026-09-08T23:17:55.646Z",
+      "valid_until": "2026-12-07T23:17:55.646Z",
+      "spec_url": "https://litzki-systems.com/protocol/sovp-attestation-v1"
+    },
+    "issuer": {
+      "uid": "urn:sovp:litzki-systems-llc",
+      "canonical_url": "https://litzki-systems.com"
+    },
+    "integrity_proof": {
+      "signature": "ifH6lzHExkkJy9aWU8Tq8vz9qeWE2PjwkR4GRqomaJeLZY2e4zkgbemUKZubXmwOgXtyQauMBhqaaF94YKliBw==",
+      "created": "2026-09-08T23:18:36.780Z",
+      "public_key_ref": "dns:txt:_sovp-attestation.litzki-systems.com",
+      "nonce": "c103e9ac-fc63-4c4d-8e28-0963a963e1af"
+    }
   }
 }

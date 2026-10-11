@@ -1,15 +1,16 @@
 name: litzki-sovp
 vendor: Litzki Systems
 product: SOVP
-version: 0.1.1
+version: 0.2.0
 category: attestation
-summary: Emits signed AgenTrust TRACE records from SOVP attestation results.
+summary: Emits signed AgenTrust TRACE records from SOVP attestation results, optionally bound by digest to the SOVP verdict document.
 maintainer:
   name: Litzki Systems
   email: maintainers@litzki.systems
 links:
   homepage: https://github.com/litzki-systems/sovp-agentrust-bridge
   repository: https://github.com/litzki-systems/sovp-agentrust-bridge
+  evidence_boundary: https://github.com/litzki-systems/sovp-agentrust-bridge/blob/main/docs/evidence-boundary.md
 runtime:
   language: python
   package: litzki-sovp-agentrust-bridge
@@ -19,16 +20,26 @@ runtime:
     - agentrust-trace
     - agentrust-trace-tests
     - agent-manifest
+    - rfc8785
 capabilities:
   emits:
     - trace-record
   consumes:
     - sovp-attestation-result
+    - sovp-attestation-document
 claims:
-  tier: community
+  tier: verified
   trace_conformance: level-0
-  verified: false
+  verified: true
+tested_against:
+  agentrust-trace: "0.10.0"
+  agentrust-trace-tests: "0.5.1"
+also_tested_against:
+  agentrust-trace: "0.11.0"
+  agentrust-trace-tests: "0.6.2"
 notes:
-  - Generated records pass agentrust-trace-tests at Level 0 (TR-ENV, TR-SIG, TR-POL). Reproduce with `trace-tests verify --record <record> --level 0`; this repository's CI runs that reproduction on every push and pull request (.github/workflows/ci.yml, Python 3.11 and 3.12).
+  - Generated records pass agentrust-trace-tests at Level 0. Reproduce with `trace-tests verify --record <record> --level 0`; this repository's CI runs that reproduction on every push and pull request (.github/workflows/ci.yml, Python 3.11 and 3.12, against the tested_against versions and the latest PyPI releases).
   - Level 0 is the honest ceiling for this bridge. It transcribes a SOVP attestation rather than measuring a hardware TEE, so runtime.platform is software-only, which the suite accepts only at Level 0.
-  - The Verified tier is granted by the AgenTrust maintainers during marketplace review, never self-declared. This field stays false until then.
+  - The Verified tier was granted by the AgenTrust maintainers in marketplace review (agentrust-io/integrations PR #220) after an independent reproduction on 2026-09-23 against release 0.1.1 with agentrust-trace 0.10.0 and agentrust-trace-tests 0.5.1. A new review against 0.2.0 has been requested.
+  - Since 0.2.0 a record can carry one references entry (rel infrastructure-trust) whose digest binds the full SOVP verdict document. It is a pointer, not evidence, and changes no assurance field. The bridge does not verify the SOVP signature. See docs/evidence-boundary.md.
+  - trace-tests verify checks the signature against the key the record carries in cnf.jwk, so a record signed with any key passes Level 0. Relying parties verify with agentrust_trace.verify_record(record, trusted_key), which rejects keys they do not already trust.

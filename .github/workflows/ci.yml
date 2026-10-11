@@ -7,12 +7,15 @@ on:
 
 jobs:
   test:
-    name: pytest + TRACE Level 0
+    name: pytest + TRACE Level 0 (py${{ matrix.python-version }}, ${{ matrix.stack }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.11", "3.12"]
+        # "tested" pins the versions named in integration.yaml; "latest" takes
+        # whatever PyPI resolves today, so upstream changes show up early.
+        stack: ["tested", "latest"]
     steps:
       - uses: actions/checkout@v4
 
@@ -25,6 +28,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e ./integrations/litzki-sovp pytest
+          if [ "${{ matrix.stack }}" = "tested" ]; then
+            python -m pip install "agentrust-trace==0.10.0" "agentrust-trace-tests==0.5.1"
+          fi
+          python -m pip show agentrust-trace agentrust-trace-tests | grep -E "^(Name|Version)"
 
       - name: Unit tests
         run: python -m pytest integrations/litzki-sovp/tests -q
@@ -40,3 +47,14 @@ jobs:
 
       - name: TRACE conformance (Level 0)
         run: trace-tests verify --record "$RUNNER_TEMP/sovp.trace.json" --level 0
+
+      - name: Record carries the SOVP document reference
+        run: |
+          python - "$RUNNER_TEMP/sovp.trace.json" integrations/litzki-sovp/examples/sovp-attestation.json <<'PY'
+          import hashlib, json, sys, rfc8785
+          record = json.load(open(sys.argv[1], encoding="utf-8"))
+          doc = json.load(open(sys.argv[2], encoding="utf-8"))["sovp_attestation_document"]
+          expected = "sha256:" + hashlib.sha256(rfc8785.dumps(doc)).hexdigest()
+          assert record["references"][0]["digest"] == expected, record["references"]
+          print("references[0].digest", expected)
+          PY
