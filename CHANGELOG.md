@@ -1,6 +1,12 @@
 # Changelog
 
-## 0.2.0 (unreleased)
+## Unreleased
+
+### Documentation
+- `integration.yaml` and `docs/evidence-boundary.md` record the maintainers' reproduction of 0.2.0 on 2026-10-12 in a fresh Windows Python 3.12 environment, including an independent recomputation of the `references` digest (review on agentrust-io/integrations PR #295).
+- The 0.2.0 heading carries its release date.
+
+## 0.2.0 (2026-10-11)
 
 ### Added
 
